@@ -39,7 +39,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Changed to move content up */
             transition: opacity 1.5s ease;
         }
 
@@ -60,16 +60,17 @@
             animation: fadeInOut 10s forwards;
             text-align: center;
             padding: 20px;
+            margin-top: 10vh; /* Puts message higher up */
         }
 
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translateY(20px); }
-            20% { opacity: 1; transform: translateY(0); }
-            80% { opacity: 1; }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; }
             100% { opacity: 0; }
         }
 
-        /* --- EXISTING STYLES --- */
+        /* --- WRAPPER & BUTTONS --- */
         .particle {
             position: fixed;
             top: -65px;
@@ -98,7 +99,7 @@
             padding: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             z-index: 10;
-            visibility: hidden; /* Hide until opening is done */
+            visibility: hidden; 
         }
 
         .minion-gif {
@@ -162,17 +163,10 @@
             transition: width 5s linear;
         }
 
-        /* SVG Star decorations */
-        .star-1, .star-2, .star-3, .star-4, .star-5, .star-6 { position: absolute; z-index: -5; transition: all 1s ease; opacity: 0; }
-        .star-1 { top: 20%; left: 20%; width: 25px; }
+        .star-1 { position: absolute; z-index: -5; transition: all 1s ease; opacity: 0; top: 20%; left: 20%; width: 25px; }
         .fil0 { fill: #E30B5C }
-
-        button:hover .star-1, button:hover .star-2, button:hover .star-3, 
-        button:hover .star-4, button:hover .star-5, button:hover .star-6 { opacity: 1; }
-        
+        button:hover .star-1 { opacity: 1; top: -80%; left: -30%; filter: drop-shadow(0 0 10px #E30B5C); }
         button.yes-btn:hover { background: #fff; color: #E30B5C; box-shadow: 0 0 25px #FF10F0; }
-        button:hover .star-1 { top: -80%; left: -30%; filter: drop-shadow(0 0 10px #E30B5C); }
-        /* (Star animations truncated for brevity, identical to your original code) */
 
         @media (max-width: 650px) {
             .wrapper { width: 90%; height: auto; }
@@ -194,7 +188,7 @@
         <div class="btn-group">
             <button class="yes-btn">Yes
                 <div class="star-1"><svg viewBox="0 0 784.11 815.53"><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></svg></div>
-                </button>
+            </button>
             <button class="no-btn">No</button>
         </div>
         <div class="loader-container">
@@ -203,7 +197,7 @@
     </div>
 
     <script>
-        /* --- SAKURA TREE GENERATOR --- */
+        /* --- SAKURA TREE ANIMATED GENERATOR --- */
         const canvas = document.getElementById('sakura-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -220,36 +214,49 @@
             ctx.fill();
         }
 
+        // Animated drawBranch
         function drawBranch(x, y, len, angle, branchWidth) {
             ctx.beginPath();
             ctx.save();
             ctx.strokeStyle = "#5D4037";
             ctx.lineWidth = branchWidth;
+            ctx.lineCap = "round";
             ctx.translate(x, y);
             ctx.rotate(angle * Math.PI / 180);
             ctx.moveTo(0, 0);
-            ctx.lineTo(0, -len);
-            ctx.stroke();
-
-            if (len < 10) {
-                // Draw heart leaves at the end of small branches
-                drawHeart(0, -len, 6);
-                ctx.restore();
-                return;
-            }
-
-            drawBranch(0, -len, len * 0.75, angle + 20, branchWidth * 0.7);
-            drawBranch(0, -len, len * 0.75, angle - 20, branchWidth * 0.7);
-
-            ctx.restore();
+            
+            // Animation logic: draw line bit by bit
+            let currentLen = 0;
+            const animateLine = () => {
+                if (currentLen < len) {
+                    ctx.lineTo(0, -currentLen);
+                    ctx.stroke();
+                    currentLen += 2; // Speed of branch growth
+                    requestAnimationFrame(animateLine);
+                } else {
+                    // Once branch is done, decide to draw hearts or sub-branches
+                    if (len < 15) {
+                        drawHeart(0, -len, 8);
+                        ctx.restore();
+                    } else {
+                        // Delay sub-branches slightly for organic feel
+                        setTimeout(() => {
+                            drawBranch(0, -len, len * 0.75, angle + (Math.random() * 20 + 10), branchWidth * 0.7);
+                            drawBranch(0, -len, len * 0.75, angle - (Math.random() * 20 + 10), branchWidth * 0.7);
+                            ctx.restore();
+                        }, 50);
+                    }
+                }
+            };
+            animateLine();
         }
 
-        // Start drawing the tree
+        // Start drawing
         setTimeout(() => {
-            drawBranch(canvas.width / 2, canvas.height, 120, 0, 15);
-        }, 500);
+            drawBranch(canvas.width / 2, canvas.height, 130, 0, 15);
+        }, 1000);
 
-        // Remove Opening Sequence after 10 seconds
+        // Sequence timing
         setTimeout(() => {
             const opening = document.getElementById('opening-sequence');
             opening.style.opacity = '0';
@@ -259,7 +266,7 @@
             }, 1500);
         }, 10000);
 
-        /* --- REST OF YOUR LOGIC --- */
+        /* --- UI LOGIC --- */
         const wrapper = document.querySelector('.wrapper');
         const question = document.querySelector('.question');
         const yesBtn = document.querySelector('.yes-btn');
@@ -287,7 +294,7 @@
         yesBtn.addEventListener('click', () => {
             question.innerHTML = "Yeheyy! Let's plan our date on February 15, 2026. Mwaaah";
             mainGif.src = "https://media1.tenor.com/m/aN_HGmP-ZgAAAAAC/m.gif";
-            mainGif.style.width = "400px";
+            mainGif.style.width = "350px";
             btnGroup.style.display = "none";
             loaderContainer.style.display = "block";
             setTimeout(() => { loaderBar.style.width = "100%"; }, 100);
