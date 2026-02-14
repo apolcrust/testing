@@ -27,7 +27,6 @@
             overflow: hidden;
         }
 
-        /* Initial Heart Button */
         #start-heart {
             font-size: 100px;
             cursor: pointer;
@@ -45,7 +44,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Intro Screen Layout */
         #intro-container {
             display: none;
             position: fixed;
@@ -193,8 +191,7 @@
             fallList = [], 
             g = 0.003, 
             gWind = 0.001, 
-            limitSpeedY = 0.4, 
-            limitSpeedX = 0.4;
+            limitSpeedY = 0.4;
 
         function drawTree(x, y, deg, step) {
             var addDeg = step % 2 === 0 ? 0.1 : -0.1,
@@ -208,23 +205,21 @@
             tCtx.strokeStyle = step > 5 ? treeColor : treeColor2;
             tCtx.stroke();
 
-            if (step > 20) {
-                tCtx.fillStyle = treeColor;
-                tCtx.arc(x, y, step / 5, 0, 2 * Math.PI);
-                tCtx.fill();
-            }
-
-            // OPTIMIZED: Slightly less frequent flower creation to save memory
-            if (step < 3 || (step < 25 && Math.random() > 0.25)) {
-                var color = [flowerColorDeep, flowerColor][Math.round(Math.random() + 0.2)],
-                    r = 3 + Math.random() * 3;
-                tCtx.fillStyle = color;
-                tCtx.arc(x1 + Math.random() * 5, y1 + Math.random() * 5, r, 0, Math.PI);
-                tCtx.fill();
-                flowerList.push({
-                    x: x, y: y, sx: Math.random() - 0.5, sy: 0,
-                    color: color, r: r, deg: deg
-                });
+            // FIXED: Only draw flowers on small branches to reduce item count
+            if (step < 15) {
+                // Reduced random check to 0.4 (fewer but more intentional leaves)
+                if (Math.random() > 0.4) {
+                    var color = [flowerColorDeep, flowerColor][Math.round(Math.random())],
+                        r = 3 + Math.random() * 2;
+                    tCtx.fillStyle = color;
+                    tCtx.arc(x1, y1, r, 0, Math.PI * 2);
+                    tCtx.fill();
+                    
+                    flowerList.push({
+                        x: x1, y: y1, sx: Math.random() - 0.5, sy: 0,
+                        color: color, r: r, deg: deg
+                    });
+                }
             }
 
             step--;
@@ -236,20 +231,19 @@
         }
 
         function update() {
-            // OPTIMIZED: Fewer leaves added to fallList per frame to stop lag
-            if (Math.random() > 0.85) { 
-                fallList.push(flowerList[Math.floor(Math.random() * flowerList.length)]);
+            // PERFORMANCE FIX: Cap the number of falling leaves to 25 at a time
+            if (fallList.length < 25 && Math.random() > 0.9) { 
+                fallList.push(Object.assign({}, flowerList[Math.floor(Math.random() * flowerList.length)]));
             }
+            
             fCtx.clearRect(0, 0, cw, ch);
             for (var i = 0; i < fallList.length; i++) {
                 var fall = fallList[i];
-                if (fall.sy < limitSpeedY) fall.sy += g;
-                fall.sx += gWind;
-                fall.x += fall.sx;
+                fall.sy += g;
+                fall.x += fall.sx + gWind;
                 fall.y += fall.sy;
-                fall.deg += fall.sx * 0.05;
                 
-                if (fall.y > rootTop + 50) {
+                if (fall.y > ch) {
                     fallList.splice(i, 1);
                     i--;
                     continue;
@@ -257,7 +251,7 @@
                 
                 fCtx.beginPath();
                 fCtx.fillStyle = fall.color;
-                fCtx.arc(fall.x, fall.y, fall.r, fall.deg, fall.deg + 1.3 * Math.PI);
+                fCtx.arc(fall.x, fall.y, fall.r, 0, Math.PI * 2);
                 fCtx.fill();
             }
             requestAnimationFrame(update);
@@ -271,6 +265,7 @@
                 requestAnimationFrame(() => {
                     introCont.style.opacity = '1';
                 });
+                // Draw the big tree once
                 drawTree(cw * 0.75, rootTop, -Math.PI / 2, 35);
             }, 800);
 
@@ -288,20 +283,20 @@
             }, 10000);
         });
 
-        // Original Particle System
-        const symbols = ['❤️', '🌸', '✨', '🌹', '💖', '🌼'];
+        const symbols = ['❤️', '🌸', '✨'];
         function createParticle() {
+            if(document.querySelectorAll('.particle').length > 15) return; // Cap background particles
             const p = document.createElement('div');
             p.classList.add('particle');
             p.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
             p.style.left = Math.random() * 100 + 'vw';
-            p.style.fontSize = Math.random() * 20 + 25 + 'px';
-            const dur = Math.random() * 4 + 6;
+            p.style.fontSize = '25px';
+            const dur = 8;
             p.style.animationDuration = dur + 's';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), dur * 1000);
         }
-        setInterval(createParticle, 600); // Slightly slower particle spawn
+        setInterval(createParticle, 1000);
 
         document.querySelector('.yes-btn').addEventListener('click', () => {
             document.querySelector('.question').innerHTML = "Yeheyy! Let's plan our date on February 15, 2026. Mwaaah";
