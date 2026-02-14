@@ -39,7 +39,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Changed to move content up */
+            justify-content: flex-start;
             transition: opacity 1.5s ease;
         }
 
@@ -47,6 +47,7 @@
             width: 100%;
             height: 100%;
             position: absolute;
+            bottom: 0;
         }
 
         .opening-text {
@@ -60,7 +61,7 @@
             animation: fadeInOut 10s forwards;
             text-align: center;
             padding: 20px;
-            margin-top: 10vh; /* Puts message higher up */
+            margin-top: 8vh;
         }
 
         @keyframes fadeInOut {
@@ -70,22 +71,7 @@
             100% { opacity: 0; }
         }
 
-        /* --- WRAPPER & BUTTONS --- */
-        .particle {
-            position: fixed;
-            top: -65px;
-            pointer-events: none;
-            animation: fall linear forwards;
-            z-index: 1;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
-
+        /* --- CARD WRAPPER --- */
         .wrapper {
             position: relative;
             width: 600px;
@@ -114,7 +100,6 @@
             color: #C21E56;
             margin: 15px 0;
             text-align: center;
-            transition: 0.5s;
         }
 
         .btn-group {
@@ -148,28 +133,26 @@
         .loader-container {
             display: none;
             width: 80%;
-            height: 10px;
-            background: #f0f0f0;
-            border-radius: 10px;
+            height: 100px;
             margin-top: 20px;
-            overflow: hidden;
-            border: 1px solid #E30B5C;
         }
 
-        .loader-bar {
-            width: 0%;
-            height: 100%;
-            background: #E30B5C;
-            transition: width 5s linear;
+        /* Particles */
+        .particle {
+            position: fixed;
+            top: -65px;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 1;
         }
 
-        .star-1 { position: absolute; z-index: -5; transition: all 1s ease; opacity: 0; top: 20%; left: 20%; width: 25px; }
-        .fil0 { fill: #E30B5C }
-        button:hover .star-1 { opacity: 1; top: -80%; left: -30%; filter: drop-shadow(0 0 10px #E30B5C); }
-        button.yes-btn:hover { background: #fff; color: #E30B5C; box-shadow: 0 0 25px #FF10F0; }
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
 
         @media (max-width: 650px) {
-            .wrapper { width: 90%; height: auto; }
+            .wrapper { width: 95%; }
             .opening-text { font-size: 3rem; }
         }
     </style>
@@ -186,77 +169,76 @@
         <img src="https://media1.tenor.com/m/CGQOSjUZ6ggAAAAC/corazon-de-minion-minion.gif" class="minion-gif" alt="Minion Heart">
         <h2 class="question">Hi Bebii! ❤️ Will you be my Valentine?</h2>
         <div class="btn-group">
-            <button class="yes-btn">Yes
-                <div class="star-1"><svg viewBox="0 0 784.11 815.53"><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></svg></div>
-            </button>
+            <button class="yes-btn">Yes</button>
             <button class="no-btn">No</button>
         </div>
         <div class="loader-container">
-            <div class="loader-bar"></div>
+            <div style="width: 100%; height: 10px; background: #f0f0f0; border-radius: 10px; overflow: hidden; border: 1px solid #E30B5C;">
+                <div class="loader-bar" style="width: 0%; height: 100%; background: #E30B5C; transition: width 5s linear;"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        /* --- SAKURA TREE ANIMATED GENERATOR --- */
         const canvas = document.getElementById('sakura-canvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
         function drawHeart(x, y, size) {
+            ctx.save();
             ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.bezierCurveTo(x, y - size / 2, x - size, y - size / 2, x - size, y);
-            ctx.bezierCurveTo(x - size, y + size / 2, x, y + size, x, y + size);
-            ctx.bezierCurveTo(x, y + size, x + size, y + size / 2, x + size, y);
-            ctx.bezierCurveTo(x + size, y - size / 2, x, y - size / 2, x, y);
-            ctx.fillStyle = "#FFB7C5";
+            ctx.translate(x, y);
+            ctx.rotate(Math.random() * Math.PI); // Randomize heart rotation
+            ctx.moveTo(0, 0);
+            ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
+            ctx.bezierCurveTo(size, size / 3, size / 2, -size / 2, 0, 0);
+            ctx.fillStyle = Math.random() > 0.5 ? "#FFB7C5" : "#FF69B4";
             ctx.fill();
+            ctx.restore();
         }
 
-        // Animated drawBranch
-        function drawBranch(x, y, len, angle, branchWidth) {
+        function drawTree(startX, startY, len, angle, branchWidth) {
             ctx.beginPath();
             ctx.save();
-            ctx.strokeStyle = "#5D4037";
+            ctx.strokeStyle = "#4E342E";
             ctx.lineWidth = branchWidth;
             ctx.lineCap = "round";
-            ctx.translate(x, y);
+            ctx.translate(startX, startY);
             ctx.rotate(angle * Math.PI / 180);
             ctx.moveTo(0, 0);
-            
-            // Animation logic: draw line bit by bit
-            let currentLen = 0;
-            const animateLine = () => {
-                if (currentLen < len) {
-                    ctx.lineTo(0, -currentLen);
-                    ctx.stroke();
-                    currentLen += 2; // Speed of branch growth
-                    requestAnimationFrame(animateLine);
-                } else {
-                    // Once branch is done, decide to draw hearts or sub-branches
-                    if (len < 15) {
-                        drawHeart(0, -len, 8);
-                        ctx.restore();
-                    } else {
-                        // Delay sub-branches slightly for organic feel
-                        setTimeout(() => {
-                            drawBranch(0, -len, len * 0.75, angle + (Math.random() * 20 + 10), branchWidth * 0.7);
-                            drawBranch(0, -len, len * 0.75, angle - (Math.random() * 20 + 10), branchWidth * 0.7);
-                            ctx.restore();
-                        }, 50);
-                    }
+            ctx.lineTo(0, -len);
+            ctx.stroke();
+
+            if (len < 10) {
+                // Bloom heart leaves
+                for(let i=0; i<3; i++) {
+                    drawHeart(Math.random()*10-5, -len + Math.random()*10-5, Math.random()*5+3);
                 }
-            };
-            animateLine();
+                ctx.restore();
+                return;
+            }
+
+            // The "Drawing" effect - use setTimeout to branch out over time
+            setTimeout(() => {
+                drawTree(0, -len, len * 0.75 + (Math.random() * 5), angle + (Math.random() * 25 + 10), branchWidth * 0.7);
+                drawTree(0, -len, len * 0.75 + (Math.random() * 5), angle - (Math.random() * 25 + 10), branchWidth * 0.7);
+            }, 150); // This delay controls the growth speed
+
+            ctx.restore();
         }
 
-        // Start drawing
+        // Initialize Tree Growth
         setTimeout(() => {
-            drawBranch(canvas.width / 2, canvas.height, 130, 0, 15);
+            drawTree(canvas.width / 2, canvas.height - 50, 100, 0, 12);
         }, 1000);
 
-        // Sequence timing
+        // Transition from Opening to Valentine Card
         setTimeout(() => {
             const opening = document.getElementById('opening-sequence');
             opening.style.opacity = '0';
@@ -266,35 +248,19 @@
             }, 1500);
         }, 10000);
 
-        /* --- UI LOGIC --- */
-        const wrapper = document.querySelector('.wrapper');
-        const question = document.querySelector('.question');
+        /* --- UI INTERACTIONS --- */
         const yesBtn = document.querySelector('.yes-btn');
         const noBtn = document.querySelector('.no-btn');
+        const question = document.querySelector('.question');
+        const mainGif = document.querySelector('.minion-gif');
         const btnGroup = document.querySelector('.btn-group');
         const loaderContainer = document.querySelector('.loader-container');
         const loaderBar = document.querySelector('.loader-bar');
-        const mainGif = document.querySelector('.minion-gif');
-
-        const symbols = ['❤️', '🌸', '✨', '🌹', '💖', '🌼'];
-
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            particle.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.fontSize = Math.random() * 20 + 25 + 'px';
-            const duration = Math.random() * 4 + 6;
-            particle.style.animationDuration = duration + 's';
-            document.body.appendChild(particle);
-            setTimeout(() => particle.remove(), duration * 1000);
-        }
-        setInterval(createParticle, 400);
 
         yesBtn.addEventListener('click', () => {
             question.innerHTML = "Yeheyy! Let's plan our date on February 15, 2026. Mwaaah";
             mainGif.src = "https://media1.tenor.com/m/aN_HGmP-ZgAAAAAC/m.gif";
-            mainGif.style.width = "350px";
+            mainGif.style.width = "300px";
             btnGroup.style.display = "none";
             loaderContainer.style.display = "block";
             setTimeout(() => { loaderBar.style.width = "100%"; }, 100);
@@ -302,14 +268,30 @@
         });
 
         noBtn.addEventListener('mouseover', () => {
+            const wrapper = document.querySelector('.wrapper');
             const wrapperRect = wrapper.getBoundingClientRect();
             const noBtnRect = noBtn.getBoundingClientRect();
             const i = Math.floor(Math.random() * (wrapperRect.width - noBtnRect.width)) + 1;
             const j = Math.floor(Math.random() * (wrapperRect.height - noBtnRect.height)) + 1;
-            noBtn.style.position = 'absolute';
             noBtn.style.left = i + 'px';
             noBtn.style.top = j + 'px';
         });
+
+        // Floating Particles
+        const symbols = ['❤️', '🌸', '✨', '💖'];
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.fontSize = Math.random() * 20 + 20 + 'px';
+            const duration = Math.random() * 3 + 4;
+            particle.style.animationDuration = duration + 's';
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+        setInterval(createParticle, 300);
     </script>
 </body>
+
 </html>
