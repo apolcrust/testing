@@ -27,7 +27,7 @@
             overflow: hidden;
         }
 
-        /* --- SAKURA SCENE STYLES --- */
+        /* --- INTRO / SAKURA SCENE --- */
         #intro-overlay {
             position: fixed;
             inset: 0;
@@ -46,9 +46,6 @@
             background: none;
             border: none;
             animation: pulse 1.5s infinite;
-            position: relative;
-            z-index: 2001;
-            box-shadow: none;
         }
 
         @keyframes pulse {
@@ -60,7 +57,7 @@
         #sakura-scene {
             position: fixed;
             inset: 0;
-            display: none; /* Shown after click */
+            display: none;
             grid-template-columns: 1fr 1fr;
             align-items: center;
             background: #fff5f7;
@@ -70,7 +67,7 @@
 
         #sakura-canvas {
             width: 100%;
-            height: 80vh;
+            height: 100%;
         }
 
         .intro-message {
@@ -79,32 +76,18 @@
             color: #E30B5C;
             text-align: center;
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity 1.5s ease;
             padding: 20px;
         }
 
-        /* --- ORIGINAL WRAPPER STYLES --- */
-        .particle {
-            position: fixed;
-            top: -65px;
-            pointer-events: none;
-            animation: fall linear forwards;
-            z-index: 1;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
-
+        /* --- WRAPPER & BUTTONS --- */
         .wrapper {
             position: relative;
             width: 600px;
             height: 500px;
             background: #FFE6EA;
             border-radius: 20px;
-            display: none; /* Initially hidden */
+            display: none;
             justify-content: center;
             align-items: center;
             flex-direction: column;
@@ -113,54 +96,75 @@
             z-index: 10;
         }
 
-        .minion-gif {
-            width: 200px;
-            height: auto;
-            border-radius: 15px;
-            margin-bottom: 10px;
-        }
-
-        h2 {
-            font-size: 2.2em;
-            color: #C21E56;
-            margin: 15px 0;
-            text-align: center;
-            transition: 0.5s;
-        }
-
         .btn-group {
             width: 100%;
-            height: 40px;
+            height: 50px;
             display: flex;
             justify-content: center;
             margin-top: 15px;
+            position: relative;
         }
 
         .wrapper button {
-            position: absolute;
             width: 150px;
-            height: inherit;
+            height: 45px;
             font-size: 1.2em;
             color: #C21E56;
             font-weight: 600;
             border-radius: 30px;
             border: 2px solid #E30B5C;
-            outline: none;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
             background: white;
+            z-index: 11;
         }
 
-        .yes-btn { margin-left: -200px; transition: all .3s ease-in-out; }
-        .no-btn { margin-right: -200px; transition: none; }
+        .yes-btn { 
+            position: relative;
+            transform: translateX(-100px); 
+            transition: all .3s ease-in-out; 
+        }
 
+        .no-btn { 
+            position: absolute;
+            transform: translateX(100px); 
+        }
+
+        /* --- STAR PARTICLES --- */
+        .star-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 20px;
+            fill: #E30B5C;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.05, 0.83, 0.43, 0.96);
+        }
+
+        .yes-btn:hover { background: #fff; box-shadow: 0 0 20px #FFB7C5; }
+        
+        /* Spread stars on hover */
+        .yes-btn:hover .s1 { transform: translate(-80px, -60px) rotate(20deg); opacity: 1; }
+        .yes-btn:hover .s2 { transform: translate(70px, -70px) rotate(-15deg); opacity: 1; }
+        .yes-btn:hover .s3 { transform: translate(-90px, 40px) rotate(-30deg); opacity: 1; }
+        .yes-btn:hover .s4 { transform: translate(80px, 50px) rotate(45deg); opacity: 1; }
+        .yes-btn:hover .s5 { transform: translate(0px, -90px) rotate(10deg); opacity: 1; }
+
+        /* --- LOADER --- */
         .loader-container {
             display: none;
             width: 80%;
             height: 10px;
             background: #f0f0f0;
             border-radius: 10px;
-            margin-top: 20px;
+            margin-top: 25px;
             overflow: hidden;
             border: 1px solid #E30B5C;
         }
@@ -172,17 +176,17 @@
             transition: width 5s linear;
         }
 
-        /* Star decorations for Yes button */
-        .star-1, .star-2, .star-3, .star-4, .star-5, .star-6 { position: absolute; z-index: -5; transition: all 1s ease; opacity: 0;}
-        .yes-btn:hover .star-1, .yes-btn:hover .star-2, .yes-btn:hover .star-3, 
-        .yes-btn:hover .star-4, .yes-btn:hover .star-5, .yes-btn:hover .star-6 { opacity: 1; }
-        .fil0 { fill: #E30B5C }
+        .particle {
+            position: fixed;
+            top: -65px;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 1;
+        }
 
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .intro-message { font-size: 2.5rem; }
-            #sakura-scene { grid-template-columns: 1fr; }
-            .wrapper { width: 90%; height: auto; }
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
@@ -203,8 +207,14 @@
         <h2 class="question">Hi Bebii! ❤️ Will you be my Valentine?</h2>
         <div class="btn-group">
             <button class="yes-btn">Yes
-                <div class="star-1" style="top:20%;left:20%;width:25px;"><svg viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z" class="fil0"></path></svg></div>
-                </button>
+                <div class="star-container">
+                    <svg class="star s1" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
+                    <svg class="star s2" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
+                    <svg class="star s3" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
+                    <svg class="star s4" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
+                    <svg class="star s5" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
+                </div>
+            </button>
             <button class="no-btn">No</button>
         </div>
         <div class="loader-container">
@@ -221,13 +231,15 @@
         const sakuraScene = document.getElementById('sakura-scene');
         const messageText = document.getElementById('message-text');
 
-        // Initial setup
+        let petals = [];
+
         function startSequence() {
             introOverlay.style.opacity = '0';
             setTimeout(() => {
                 introOverlay.style.display = 'none';
                 sakuraScene.style.display = 'grid';
                 resizeCanvas();
+                // Position tree at bottom center of the RIGHT half
                 growTree();
             }, 1000);
         }
@@ -237,57 +249,62 @@
             canvas.height = canvas.offsetHeight;
         }
 
-        // --- SAKURA TREE LOGIC ---
-        let petals = [];
-        function drawHeartPetal(x, y, size, color) {
+        function drawHeart(x, y, size, color) {
             ctx.fillStyle = color;
             ctx.beginPath();
             ctx.moveTo(x, y);
-            ctx.bezierCurveTo(x - size/2, y - size/2, x - size, y + size/3, x, y + size);
-            ctx.bezierCurveTo(x + size, y + size/3, x + size/2, y - size/2, x, y);
+            ctx.bezierCurveTo(x - size / 2, y - size / 2, x - size, y + size / 3, x, y + size);
+            ctx.bezierCurveTo(x + size, y + size / 3, x + size / 2, y - size / 2, x, y);
             ctx.fill();
         }
 
         function drawBranch(x, y, len, angle, branchWidth) {
-            ctx.beginPath();
             ctx.save();
             ctx.strokeStyle = "#5D4037";
             ctx.lineWidth = branchWidth;
             ctx.translate(x, y);
             ctx.rotate(angle * Math.PI / 180);
+            ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(0, -len);
             ctx.stroke();
 
             if (len < 10) {
-                // Add hearts at the end of branches
-                let pColor = Math.random() > 0.5 ? "#FFB7C5" : "#FFC0CB";
-                drawHeartPetal(0, -len, 10, pColor);
-                // Save petal position for falling effect later
-                petals.push({x: x, y: y, size: 8, color: pColor, vy: Math.random() * 2 + 1});
+                let pColor = Math.random() > 0.5 ? "#FFB7C5" : "#FF69B4";
+                drawHeart(0, -len, 8, pColor);
+                
+                // Absolute coordinates for falling petals
+                const matrix = ctx.getTransform();
+                petals.push({
+                    x: matrix.e, 
+                    y: matrix.f, 
+                    size: 6 + Math.random() * 4, 
+                    color: pColor, 
+                    vy: 1 + Math.random() * 2,
+                    targetY: canvas.height + 20
+                });
+                
                 ctx.restore();
                 return;
             }
 
             setTimeout(() => {
-                drawBranch(0, -len, len * 0.8, angle + 15 + Math.random() * 15, branchWidth * 0.7);
-                drawBranch(0, -len, len * 0.8, angle - 15 - Math.random() * 15, branchWidth * 0.7);
-            }, 100); 
+                drawBranch(0, -len, len * 0.75, angle + 20 + Math.random() * 10, branchWidth * 0.7);
+                drawBranch(0, -len, len * 0.75, angle - 20 - Math.random() * 10, branchWidth * 0.7);
+            }, 80);
 
             ctx.restore();
         }
 
         function growTree() {
-            // Start growth from bottom center of the canvas
-            drawBranch(canvas.width/2, canvas.height, 80, 0, 10);
+            // Draw from bottom center of canvas
+            drawBranch(canvas.width / 2, canvas.height - 20, 100, 0, 12);
 
-            // After 5 seconds: Start Falling Leaves & Show Message
             setTimeout(() => {
                 messageText.style.opacity = "1";
-                startFalling();
+                animatePetals();
             }, 5000);
 
-            // After 10 seconds: Show Final Wrapper
             setTimeout(() => {
                 sakuraScene.style.opacity = "0";
                 setTimeout(() => {
@@ -297,64 +314,63 @@
             }, 10000);
         }
 
-        function startFalling() {
-            // Simple loop to clear canvas and animate saved petals
-            function animate() {
-                if(sakuraScene.style.display === 'none') return;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Redraw tree (static) - keeping it simple for performance
-                // Usually we'd draw the tree once to a background buffer
+        function animatePetals() {
+            function frame() {
+                if (sakuraScene.style.display === 'none') return;
+                // Only clear the petals area or redraw tree
+                // For simplicity, we just let them fall over the tree
                 petals.forEach(p => {
                     p.y += p.vy;
-                    if(p.y > canvas.height) p.y = -10;
-                    drawHeartPetal(p.x + Math.sin(p.y/20)*10, p.y, p.size, p.color);
+                    p.x += Math.sin(p.y / 30);
+                    if (p.y > p.targetY) p.y = -20;
+                    drawHeart(p.x, p.y, p.size, p.color);
                 });
-                requestAnimationFrame(animate);
+                requestAnimationFrame(frame);
             }
-            // animate(); // Uncomment if you want actual falling motion on the canvas
+            frame();
         }
 
-        // --- ORIGINAL WRAPPER LOGIC ---
-        const symbols = ['❤️', '🌸', '✨', '🌹', '💖', '🌼'];
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            particle.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.fontSize = Math.random() * 20 + 25 + 'px';
-            const duration = Math.random() * 4 + 6;
-            particle.style.animationDuration = duration + 's';
-            document.body.appendChild(particle);
-            setTimeout(() => particle.remove(), duration * 1000);
-        }
-        setInterval(createParticle, 400);
+        // --- BUTTON INTERACTIONS ---
+        noBtn.addEventListener('mouseover', () => {
+            const wrapperRect = wrapper.getBoundingClientRect();
+            const noRect = noBtn.getBoundingClientRect();
+            // Ensure it stays inside the pink wrapper
+            const maxX = wrapperRect.width - noRect.width;
+            const maxY = wrapperRect.height - noRect.height;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        });
 
         const yesBtn = document.querySelector('.yes-btn');
         yesBtn.addEventListener('click', () => {
-            const question = document.querySelector('.question');
+            document.querySelector('.question').innerHTML = "Yeheyy! Let's plan our date on February 15, 2026. Mwaaah";
             const mainGif = document.querySelector('.minion-gif');
-            const btnGroup = document.querySelector('.btn-group');
-            const loaderContainer = document.querySelector('.loader-container');
-            const loaderBar = document.querySelector('.loader-bar');
-
-            question.innerHTML = "Yeheyy! Let's plan our date on February 15, 2026. Mwaaah";
             mainGif.src = "https://media1.tenor.com/m/aN_HGmP-ZgAAAAAC/m.gif";
-            mainGif.style.width = "400px";
-            btnGroup.style.display = "none";
-            loaderContainer.style.display = "block";
+            mainGif.style.width = "350px";
+            document.querySelector('.btn-group').style.display = "none";
+            const loader = document.querySelector('.loader-container');
+            loader.style.display = "block";
             
-            setTimeout(() => { loaderBar.style.width = "100%"; }, 100);
+            setTimeout(() => { document.querySelector('.loader-bar').style.width = "100%"; }, 100);
             setTimeout(() => { window.location.href = "page2.html"; }, 5000);
         });
 
-        noBtn.addEventListener('mouseover', () => {
-            const wrapperRect = wrapper.getBoundingClientRect();
-            const noBtnRect = noBtn.getBoundingClientRect();
-            const i = Math.floor(Math.random() * (wrapperRect.width - noBtnRect.width)) + 1;
-            const j = Math.floor(Math.random() * (wrapperRect.height - noBtnRect.height)) + 1;
-            noBtn.style.left = i + 'px';
-            noBtn.style.top = j + 'px';
-        });
+        // Background Particles
+        setInterval(() => {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            p.innerHTML = ['❤️', '🌸', '✨', '💖'][Math.floor(Math.random() * 4)];
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.fontSize = Math.random() * 20 + 20 + 'px';
+            const dur = Math.random() * 3 + 5;
+            p.style.animationDuration = dur + 's';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), dur * 1000);
+        }, 400);
     </script>
 </body>
 
