@@ -28,7 +28,7 @@
         }
 
         /* Initial Heart Button */
-        #start-button {
+        #start-heart {
             font-size: 100px;
             cursor: pointer;
             background: none;
@@ -36,6 +36,7 @@
             z-index: 100;
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
             animation: pulse 1.5s infinite;
+            display: block;
         }
 
         @keyframes pulse {
@@ -44,39 +45,38 @@
             100% { transform: scale(1); }
         }
 
-        /* Intro Screen Container */
+        /* Intro Screen Layout */
         #intro-container {
-            position: fixed;
-            inset: 0;
             display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
             z-index: 50;
-            background: transparent;
         }
 
-        #sakura-canvas {
+        canvas {
             position: absolute;
-            right: 5%;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 45%;
-            height: 90%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
         }
 
         #intro-message {
             position: absolute;
-            left: 5%;
+            left: 10%;
             top: 50%;
             transform: translateY(-50%);
             font-family: 'Great Vibes', cursive;
             font-size: 5em;
             color: #C21E56;
-            width: 45%;
-            text-align: center;
             opacity: 0;
             transition: opacity 1.5s ease;
+            width: 40%;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
         }
 
-        /* Original Wrapper */
+        /* Original Wrapper Styles */
         .wrapper {
             display: none;
             position: relative;
@@ -107,33 +107,17 @@
 
         .minion-gif { width: 200px; height: auto; border-radius: 15px; margin-bottom: 10px; }
         h2 { font-size: 2.2em; color: #C21E56; margin: 15px 0; text-align: center; }
-
-        .btn-group { width: 100%; height: 40px; display: flex; justify-content: center; margin-top: 15px; position: relative; }
+        .btn-group { width: 100%; height: 40px; display: flex; justify-content: center; margin-top: 15px; }
         
-        button.action-btn { position: absolute; width: 150px; height: 45px; font-size: 1.2em; color: #C21E56; font-weight: 600; border-radius: 30px; border: 2px solid #E30B5C; cursor: pointer; background: white; z-index: 10;}
-        .yes-btn { transform: translateX(-100px); transition: all .3s ease-in-out; }
-        .no-btn { transform: translateX(100px); }
-
-        /* Star Effects Fix */
-        .star-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-        }
-        .star-svg {
-            position: absolute;
-            width: 20px;
-            fill: #E30B5C;
-            opacity: 0;
-            transition: all 0.8s cubic-bezier(0.05, 0.83, 0.43, 0.96);
+        button.action-btn { 
+            position: absolute; width: 150px; height: 40px; font-size: 1.2em; color: #C21E56; 
+            font-weight: 600; border-radius: 30px; border: 2px solid #E30B5C; outline: none; 
+            cursor: pointer; background: white; 
         }
 
-        /* Star burst positions on hover */
-        .yes-btn:hover .s1 { transform: translate(-50px, -50px); opacity: 1; }
-        .yes-btn:hover .s2 { transform: translate(50px, -50px); opacity: 1; }
-        .yes-btn:hover .s3 { transform: translate(-60px, 40px); opacity: 1; }
-        .yes-btn:hover .s4 { transform: translate(60px, 40px); opacity: 1; }
-        .yes-btn:hover .s5 { transform: translate(0px, -70px); opacity: 1; }
+        .yes-btn { margin-left: -200px; transition: all .3s ease-in-out; }
+        .no-btn { margin-right: -200px; transition: none; }
+        .yes-btn:hover { background: transparent; color: #E30B5C; box-shadow: 0 0 25px #FF10F0; }
 
         .loader-container { display: none; width: 80%; height: 10px; background: #f0f0f0; border-radius: 10px; margin-top: 20px; overflow: hidden; border: 1px solid #E30B5C; }
         .loader-bar { width: 0%; height: 100%; background: #E30B5C; transition: width 5s linear; }
@@ -142,26 +126,19 @@
 
 <body>
 
-    <button id="start-button">❤️</button>
+    <button id="start-heart">❤️</button>
 
     <div id="intro-container">
-        <div id="intro-message">Happy Hearts day Bebiii ❤️</div>
-        <canvas id="sakura-canvas"></canvas>
+        <div id="intro-message">Happy Hearts day Bebiii</div>
+        <canvas id="treeAndFlower"></canvas>
+        <canvas id="animateFlower"></canvas>
     </div>
 
     <div class="wrapper">
         <img src="https://media1.tenor.com/m/CGQOSjUZ6ggAAAAC/corazon-de-minion-minion.gif" class="minion-gif" alt="Minion Heart">
         <h2 class="question">Hi Bebii! ❤️ Will you be my Valentine?</h2>
         <div class="btn-group">
-            <button class="yes-btn action-btn">Yes
-                <div class="star-container">
-                    <svg class="star-svg s1" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
-                    <svg class="star-svg s2" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
-                    <svg class="star-svg s3" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
-                    <svg class="star-svg s4" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
-                    <svg class="star-svg s5" viewBox="0 0 784 815"><path d="M392 0c-20 210-184 378-392 407 207 30 371 198 392 408 21-210 184-378 392-408-208-29-371-197-392-407z"/></svg>
-                </div>
-            </button>
+            <button class="yes-btn action-btn">Yes</button>
             <button class="no-btn action-btn">No</button>
         </div>
         <div class="loader-container">
@@ -170,38 +147,111 @@
     </div>
 
     <script>
-        const startBtn = document.getElementById('start-button');
+        const startHeart = document.getElementById('start-heart');
         const introCont = document.getElementById('intro-container');
-        const canvas = document.getElementById('sakura-canvas');
-        const ctx = canvas.getContext('2d');
-        const message = document.getElementById('intro-message');
+        const introMsg = document.getElementById('intro-message');
         const wrapper = document.querySelector('.wrapper');
-        const yesBtn = document.querySelector('.yes-btn');
-        const noBtn = document.querySelector('.no-btn');
 
-        let fallingHearts = [];
+        // SAKURA TREE SETTINGS
+        var treeCanvas = document.getElementById("treeAndFlower"),
+            tCtx = treeCanvas.getContext('2d'),
+            flowerCanvas = document.getElementById("animateFlower"),
+            fCtx = flowerCanvas.getContext("2d"),
+            cw = window.innerWidth,
+            ch = window.innerHeight;
 
-        function resize() {
-            canvas.width = window.innerWidth * 0.45;
-            canvas.height = window.innerHeight * 0.9;
+        treeCanvas.width = flowerCanvas.width = cw;
+        treeCanvas.height = flowerCanvas.height = ch;
+
+        var flowerList = [],
+            rootTop = ch - 150,
+            flowerColor = "rgba(255,192,203,.3)", 
+            flowerColorDeep = "rgba(241,158,194,.5)", 
+            treeColor2 = "rgba(255,192,203,.5)", 
+            treeColor = "#FFF", 
+            fallList = [], 
+            g = 0.005, // SLOWER GRAVITY
+            gWind = 0.002, // SLOWER WIND
+            limitSpeedY = 0.5, // SLOWER SPEED LIMIT
+            limitSpeedX = 0.5;
+
+        fCtx.shadowColor = "#FFF";
+        fCtx.shadowBlur = 10;
+
+        function drawTree(x, y, deg, step) {
+            var addDeg = step % 2 === 0 ? 0.1 : -0.1,
+                x1 = x + Math.cos(deg + addDeg) * (step + 4) * 0.8,
+                y1 = y + Math.sin(deg + addDeg) * (step - 1) * 0.8;
+            tCtx.beginPath();
+            tCtx.lineWidth = step / 3;
+            tCtx.moveTo(x, y);
+            tCtx.lineTo(x1, y1);
+            tCtx.strokeStyle = step > 5 ? treeColor : treeColor2;
+            tCtx.stroke();
+            if (step > 20) {
+                tCtx.fillStyle = treeColor;
+                tCtx.arc(x, y, step / 6, 0, 2 * Math.PI);
+                tCtx.fill();
+            }
+            if (step < 3 || (step < 23 && Math.random() > 0.1)) {
+                var color = [flowerColorDeep, flowerColor][Math.round(Math.random() + 0.2)],
+                    r = 2 + Math.random() * 2;
+                tCtx.fillStyle = color;
+                tCtx.arc(x1 + Math.random() * 3, y1 + Math.random() * 3, r, 0, Math.PI);
+                tCtx.fill();
+                flowerList.push({
+                    x: x, y: y, sx: Math.random() - 0.5, sy: 0,
+                    color: color, r: r, deg: deg
+                });
+            }
+            step--;
+            if (step > 0) {
+                drawTree(x1, y1, deg, step);
+                if (step % 3 === 0) drawTree(x1, y1, deg + 0.2 + Math.random() * 0.3, Math.round(step / 1.13));
+                if (step % 3 === 1) drawTree(x1, y1, deg - 0.2 - Math.random() * 0.3, Math.round(step / 1.13));
+            }
         }
-        window.addEventListener('resize', resize);
-        resize();
 
-        startBtn.addEventListener('click', () => {
-            startBtn.style.display = 'none';
+        function update() {
+            if (Math.random() > 0.3) {
+                fallList.push(flowerList[Math.floor(Math.random() * flowerList.length)]);
+            }
+            fCtx.clearRect(0, 0, cw, ch);
+            for (var i = 0; i < fallList.length; i++) {
+                var fall = fallList[i];
+                if (fall.sy < limitSpeedY) fall.sy += g;
+                fall.sx += gWind;
+                fall.x += fall.sx;
+                fall.y += fall.sy;
+                fall.deg += fall.sx * 0.05;
+                if (fall.y > rootTop) {
+                    fallList.splice(i, 1);
+                    i--;
+                    continue;
+                }
+                fCtx.beginPath();
+                fCtx.fillStyle = fall.color;
+                fCtx.arc(fall.x, fall.y, fall.r, fall.deg, fall.deg + 1.3 * Math.PI);
+                fCtx.fill();
+            }
+            requestAnimationFrame(update);
+        }
+
+        // START TRIGGER
+        startHeart.addEventListener('click', () => {
+            startHeart.style.display = 'none';
             introCont.style.display = 'block';
             
-            // Instantly draw tree without "drawing" animation
-            drawFullTree(canvas.width / 2, canvas.height - 50, 80, 0, 10);
+            // Draw tree on the right side
+            drawTree(cw * 0.75, rootTop, -Math.PI / 2, 30);
 
-            // Phase 2: After 5 seconds, message appears and hearts fall
+            // Phase 2: Message & Falling starts after 5s
             setTimeout(() => {
-                message.style.opacity = "1";
-                startAnimateHearts();
+                introMsg.style.opacity = "1";
+                update(); 
             }, 5000);
 
-            // Phase 3: Transition to wrapper
+            // Phase 3: Wrapper appears after 10s total
             setTimeout(() => {
                 introCont.style.opacity = "0";
                 setTimeout(() => {
@@ -211,94 +261,44 @@
             }, 10000);
         });
 
-        function drawHeart(x, y, size, color) {
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.bezierCurveTo(x - size/2, y - size/2, x - size, y + size/3, x, y + size);
-            ctx.bezierCurveTo(x + size, y + size/3, x + size/2, y - size/2, x, y);
-            ctx.fill();
-        }
+        // ORIGINAL WRAPPER LOGIC
+        const yesBtn = document.querySelector('.yes-btn');
+        const noBtn = document.querySelector('.no-btn');
+        const loaderBar = document.querySelector('.loader-bar');
+        const loaderContainer = document.querySelector('.loader-container');
 
-        function drawFullTree(x, y, len, angle, branchWidth) {
-            ctx.beginPath();
-            ctx.save();
-            ctx.strokeStyle = "#5D4037";
-            ctx.lineWidth = branchWidth;
-            ctx.translate(x, y);
-            ctx.rotate(angle * Math.PI / 180);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(0, -len);
-            ctx.stroke();
-
-            if (len < 10) {
-                const colors = ["#FFB7C5", "#FFC0CB", "#FF69B4"];
-                const leafColor = colors[Math.floor(Math.random()*colors.length)];
-                drawHeart(0, -len, 10, leafColor);
-                
-                // Store coordinates for falling animation later
-                const matrix = ctx.getTransform();
-                fallingHearts.push({x: matrix.e, y: matrix.f, size: 8, color: leafColor, speed: 1 + Math.random()*2});
-                
-                ctx.restore();
-                return;
-            }
-
-            drawFullTree(0, -len, len * 0.8, angle + 15 + Math.random()*15, branchWidth * 0.7);
-            drawFullTree(0, -len, len * 0.8, angle - 15 - Math.random()*15, branchWidth * 0.7);
-            ctx.restore();
-        }
-
-        function startAnimateHearts() {
-            function update() {
-                if(introCont.style.display === 'none') return;
-                // We don't clear the whole canvas to keep the tree visible, 
-                // just animate new falling particles over it
-                fallingHearts.forEach(h => {
-                    h.y += h.speed;
-                    if(h.y > canvas.height) h.y = -10;
-                    drawHeart(h.x + Math.sin(h.y/20)*5, h.y, h.size, h.color);
-                });
-                requestAnimationFrame(update);
-            }
-            update();
-        }
-
-        // Standard Particle System
         const symbols = ['❤️', '🌸', '✨', '🌹', '💖', '🌼'];
         function createParticle() {
             const p = document.createElement('div');
             p.classList.add('particle');
             p.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
             p.style.left = Math.random() * 100 + 'vw';
-            p.style.fontSize = Math.random() * 20 + 20 + 'px';
-            const duration = Math.random() * 4 + 6;
-            p.style.animationDuration = duration + 's';
+            p.style.fontSize = Math.random() * 20 + 25 + 'px';
+            const dur = Math.random() * 4 + 6;
+            p.style.animationDuration = dur + 's';
             document.body.appendChild(p);
-            setTimeout(() => p.remove(), duration * 1000);
+            setTimeout(() => p.remove(), dur * 1000);
         }
         setInterval(createParticle, 400);
 
         yesBtn.addEventListener('click', () => {
             document.querySelector('.question').innerHTML = "Yeheyy! Let's plan our date on February 15, 2026. Mwaaah";
-            const mainGif = document.querySelector('.minion-gif');
-            mainGif.src = "https://media1.tenor.com/m/aN_HGmP-ZgAAAAAC/m.gif";
-            mainGif.style.width = "400px";
+            document.querySelector('.minion-gif').src = "https://media1.tenor.com/m/aN_HGmP-ZgAAAAAC/m.gif";
+            document.querySelector('.minion-gif').style.width = "400px";
             document.querySelector('.btn-group').style.display = "none";
-            document.querySelector('.loader-container').style.display = "block";
-            setTimeout(() => { document.querySelector('.loader-bar').style.width = "100%"; }, 100);
+            loaderContainer.style.display = "block";
+            setTimeout(() => { loaderBar.style.width = "100%"; }, 100);
             setTimeout(() => { window.location.href = "page2.html"; }, 5000);
         });
 
         noBtn.addEventListener('mouseover', () => {
             const wrapperRect = wrapper.getBoundingClientRect();
-            const noRect = noBtn.getBoundingClientRect();
-            const i = Math.floor(Math.random() * (wrapperRect.width - noRect.width)) + 1;
-            const j = Math.floor(Math.random() * (wrapperRect.height - noRect.height)) + 1;
+            const noBtnRect = noBtn.getBoundingClientRect();
+            const i = Math.floor(Math.random() * (wrapperRect.width - noBtnRect.width)) + 1;
+            const j = Math.floor(Math.random() * (wrapperRect.height - noBtnRect.height)) + 1;
             noBtn.style.left = i + 'px';
             noBtn.style.top = j + 'px';
         });
     </script>
 </body>
-
 </html>
