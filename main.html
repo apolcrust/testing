@@ -173,62 +173,72 @@
         </div>
     </div>
 
-    <script>
-        const wrapper = document.querySelector('.wrapper');
-        const question = document.querySelector('.question');
-        const yesBtn = document.querySelector('.yes-btn');
-        const noBtn = document.querySelector('.no-btn');
-        const btnGroup = document.querySelector('.btn-group');
-        const loaderContainer = document.querySelector('.loader-container');
-        const loaderBar = document.querySelector('.loader-bar');
-        const mainGif = document.querySelector('.minion-gif');
+<script>
+    const wrapper = document.querySelector('.wrapper');
+    const question = document.querySelector('.question');
+    const yesBtn = document.querySelector('.yes-btn');
+    const noBtn = document.querySelector('.no-btn');
+    const btnGroup = document.querySelector('.btn-group');
+    const loaderContainer = document.querySelector('.loader-container');
+    const loaderBar = document.querySelector('.loader-bar');
+    const mainGif = document.querySelector('.minion-gif');
 
-        const wrapperRect = wrapper.getBoundingClientRect();
-        const noBtnRect = noBtn.getBoundingClientRect();
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const noBtnRect = noBtn.getBoundingClientRect();
 
-        const symbols = ['❤️', '🌸', '✨', '🌹', '💖', '🌼'];
+    const symbols = ['❤️', '🌸', '✨', '🌹', '💖', '🌼'];
 
-        // Continuous falling background
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            particle.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.fontSize = Math.random() * 20 + 25 + 'px';
-            const duration = Math.random() * 4 + 6;
-            particle.style.animationDuration = duration + 's';
-            document.body.appendChild(particle);
-            setTimeout(() => particle.remove(), duration * 1000);
-        }
-        setInterval(createParticle, 400);
+    function createParticle() {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.fontSize = Math.random() * 20 + 25 + 'px';
+        const duration = Math.random() * 4 + 6;
+        particle.style.animationDuration = duration + 's';
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), duration * 1000);
+    }
+    setInterval(createParticle, 400);
 
-        // --- NEW: SUCCESS BURST EFFECT ---
-        function createBurst() {
-            for (let i = 0; i < 50; i++) {
-                const p = document.createElement('div');
-                p.classList.add('burst-particle');
-                p.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-                p.style.fontSize = Math.random() * 30 + 20 + 'px';
-                
-                // Random target coordinates for the burst
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 400 + 100;
-                const tx = Math.cos(angle) * distance + 'px';
-                const ty = Math.sin(angle) * distance + 'px';
-                const tr = Math.random() * 360 + 'deg';
-                
-                p.style.setProperty('--tw', tx);
-                p.style.setProperty('--th', ty);
-                p.style.setProperty('--tr', tr);
-                
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 1500);
-            }
-        }
-
-        yesBtn.addEventListener('click', () => {
-            createBurst(); // Trigger the burst!
+    // FIXED: Burst now originates from the button and is smaller
+    function createBurst(x, y) {
+        for (let i = 0; i < 20; i++) { // Reduced count for a subtler effect
+            const p = document.createElement('div');
+            p.classList.add('burst-particle');
+            p.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+            p.style.fontSize = Math.random() * 15 + 10 + 'px'; // Smaller particles
             
+            // Set start position to the button's coordinates
+            p.style.left = x + 'px';
+            p.style.top = y + 'px';
+
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 100 + 50; // Shorter distance (small burst)
+            const tx = Math.cos(angle) * distance + 'px';
+            const ty = Math.sin(angle) * distance + 'px';
+            const tr = Math.random() * 360 + 'deg';
+            
+            p.style.setProperty('--tw', tx);
+            p.style.setProperty('--th', ty);
+            p.style.setProperty('--tr', tr);
+            
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1000);
+        }
+    }
+
+    yesBtn.addEventListener('click', (e) => {
+        // Get the position of the click/button
+        const rect = yesBtn.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // 1. Trigger the small burst at the button location
+        createBurst(centerX, centerY);
+        
+        // 2. Add a tiny delay (500ms) so the burst is seen before UI changes
+        setTimeout(() => {
             question.innerHTML = "Yeheyy! Let's plan our date on February 15, 2026. Mwaaah";
             question.style.fontSize = "2.2em";
             mainGif.src = "https://media1.tenor.com/m/aN_HGmP-ZgAAAAAC/m.gif";
@@ -238,14 +248,15 @@
             
             setTimeout(() => { loaderBar.style.width = "100%"; }, 100);
             setTimeout(() => { window.location.href = "page2.html"; }, 5000);
-        });
+        }, 500); 
+    });
 
-        noBtn.addEventListener('mouseover', () => {
-            const i = Math.floor(Math.random() * (wrapperRect.width - noBtnRect.width)) + 1;
-            const j = Math.floor(Math.random() * (wrapperRect.height - noBtnRect.height)) + 1;
-            noBtn.style.left = i + 'px';
-            noBtn.style.top = j + 'px';
-        });
-    </script>
+    noBtn.addEventListener('mouseover', () => {
+        const i = Math.floor(Math.random() * (wrapperRect.width - noBtnRect.width)) + 1;
+        const j = Math.floor(Math.random() * (wrapperRect.height - noBtnRect.height)) + 1;
+        noBtn.style.left = i + 'px';
+        noBtn.style.top = j + 'px';
+    });
+</script>
 </body>
 </html>
